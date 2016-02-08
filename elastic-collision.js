@@ -1,5 +1,6 @@
+
 // Declare global variables.
-var scene, camera, renderer, material, controls;
+var scene, camera, renderer, materialBlue, materialRed, controls;
 var sphere1, sphere2;
 
 scene = new THREE.Scene();
@@ -38,19 +39,47 @@ sphere2.position.set(-200, 0, 0);
 scene.add(sphere1);
 scene.add(sphere2);
 
+// The speed is measured in units/second.
+sphere1.velocity = 50;
+sphere2.velocity = 50;
 
-function render() {
-    // Add animation frame to call render() about 30 times a second.
-    requestAnimationFrame(render);
+sphere1.radius = 50;
+sphere2.radius = 50;
+
+var previousTime = 0;
+
+function render(time) {
+    'use strict';
+    
+    // time is a decimal number representing the time in milliseconds.
+    // Calculate the change in time in seconds since the last frame.
+    var deltaTime = (time - previousTime) * 0.001;
+    previousTime = time;
+
+    // Check for a collision and reverse direction.
+    if (Math.abs(sphere1.position.x - sphere2.position.x + deltaTime * (sphere2.velocity - sphere1.velocity)) <= sphere1.radius + sphere2.radius) {
+        // Calclate new velocities.
+        sphere1.velocity *= -1;
+        sphere2.velocity *= -1;
+    }
+
+    // Update positions of spheres.
+    sphere1.position.x -= deltaTime * sphere1.velocity;
+    sphere2.position.x += deltaTime * sphere2.velocity;
 
     // Update the scene.
     renderer.render(scene, camera);
+
+    // Add animation frame to call render().
+    requestAnimationFrame(render);
 }
 
-render(); // Start animation.
+requestAnimationFrame(render); // Start animation.
 
 // Create a function that is called whenever the window is resized.
 window.addEventListener('resize', function() {
+    'use strict';
+
     var width = window.innerWidth, height = window.innerHeight;
     renderer.setSize(width, height);
     camera.aspect = width / height;
