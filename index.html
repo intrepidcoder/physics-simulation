@@ -17,21 +17,25 @@
 		<div id="controls">
 			<table>
 				<thead>
-					<th colspan="2">Red ball</th>
-					<th colspan="2">Blue ball</th>
+					<tr>
+						<th colspan="2">Red ball</th>
+						<th colspan="2">Blue ball</th>
+						<th></th>
+					</tr>
 				</thead>
 				<tbody>
 					<tr>
 						<td>Mass:</td>
-						<td><input type='number' id="mass1" name="mass1" value="1000" min="0"></td>
+						<td><input type='number' id="mass1" name="mass1" value="1000" min="0" max="10000"></td>
 						<td>Mass:</td>
-						<td><input type='number' id="mass2" name="mass2" value="1000" min="0"></td>
-						<td><input type="button" id="start-button" name="start-button" value="Start"><td>
+						<td><input type='number' id="mass2" name="mass2" value="1000" min="0" max="10000"></td>
+						<td><input type="button" id="start-button" name="start-button" value="Start"></td>
 					</tr><tr>
 						<td>Velocity:</td>
-						<td><input type='number' id="velocity1" name="velocity1" value="50" min="0"></td>
+						<td><input type='number' id="velocity1" name="velocity1" value="50" min="0" max="1000"></td>
 						<td>Velocity:</td>
-						<td><input type='number' id="velocity2" name="velocity2" value="50" min="0"></td>
+						<td><input type='number' id="velocity2" name="velocity2" value="50" min="0" max="1000"></td>
+						<td><input type="button" id="reset-button" name="reset-button" value="Reset"></td>
 					</tr>
 				</tbody>
 			</table>
