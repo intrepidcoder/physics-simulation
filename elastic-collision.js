@@ -1,5 +1,5 @@
-// This function is called immediately on execution.
-((function main(){
+// The main function is called immediately as soon as the page starts loading.
+((function main() {
     // Enforce stricter syntax.
     'use strict';
 
@@ -55,16 +55,19 @@
         // Move spheres.
         if (running) {
             // Check for a collision and reverse direction.
-            distance = Math.abs(sphere1.mesh.position.x - sphere2.mesh.position.x) - 0*deltaTime * (sphere2.velocity + sphere1.velocity);
-            if (distance <= sphere1.radius + sphere2.radius && (sphere1.velocity > 0 || sphere2.velocity > 0)) {
+            distance = Math.abs(sphere1.mesh.position.x - sphere2.mesh.position.x) - deltaTime * (sphere1.velocity - sphere2.velocity);
+            if (distance <= sphere1.radius + sphere2.radius && (sphere1.velocity > 0 || sphere2.velocity < 0)) {
+                // Store initial velocities.
+                var v1 = sphere1.velocity, v2 = sphere2.velocity;
+
                 // Calclate new velocities.
-                sphere1.velocity *= -1;
-                sphere2.velocity *= -1;
+                sphere1.velocity = ((sphere1.mass - sphere2.mass)*v1 + 2 * sphere2.mass * v2)/(sphere1.mass + sphere2.mass);
+                sphere2.velocity = ((sphere2.mass - sphere1.mass)*v2 + 2 * sphere1.mass * v1)/(sphere1.mass + sphere2.mass);
             }
 
             // Update positions of spheres.
             sphere1.mesh.position.x += deltaTime * sphere1.velocity;
-            sphere2.mesh.position.x -= deltaTime * sphere2.velocity;
+            sphere2.mesh.position.x += deltaTime * sphere2.velocity;
         }
 
         // Update the scene.
@@ -84,13 +87,13 @@
         sphere1.mass = parseInt(document.getElementById('mass1').value, 10);
         sphere2.mass = parseInt(document.getElementById('mass2').value, 10);
         sphere1.velocity = parseInt(document.getElementById('velocity1').value, 10);
-        sphere2.velocity = parseInt(document.getElementById('velocity2').value, 10);
+        sphere2.velocity = -parseInt(document.getElementById('velocity2').value, 10);
 
         // Limit range of mass and velocity.
         sphere1.mass = Math.min(Math.max(sphere1.mass, 1), 10000);
         sphere2.mass = Math.min(Math.max(sphere2.mass, 1), 10000);
         sphere1.velocity = Math.min(Math.max(sphere1.velocity, 0), 1000);
-        sphere2.velocity = Math.min(Math.max(sphere2.velocity, 0), 1000);
+        sphere2.velocity = Math.max(Math.min(sphere2.velocity, 0), -1000);
 
         // Assuming constant density, the radius of a sphere is proportional to the cube root of the mass.
         sphere1.radius = 5 * Math.pow(sphere1.mass, 1/3);
