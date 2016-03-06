@@ -7,12 +7,18 @@
         self = this,
         width,
         height,
-        focalLength = 300;
+        focalLength = 300,
+        objectDistance = 800,
+        objectHeight = 50,
+        imageDistance = 1 / (1 / focalLength - 1 / objectDistance),
+        imageHeight = -objectHeight * imageDistance / objectDistance;
 
-        var drawStatic = function() {
+        var draw = function() {
             var centerX = Math.floor(width / 2),
             centerY = Math.floor(height / 2),
-            angle = Math.asin(100 / focalLength);
+            angle = Math.asin(100 / focalLength),
+            arrowHeight,
+            arrowWidth = 6;
 
             // Draw dashed center line
             context.setLineDash([20, 20]);
@@ -50,10 +56,45 @@
             context.beginPath();
             context.arc(centerX + focalLength, centerY, 5, 0, 2 * Math.PI, false);
             context.fill();
-        };
 
-        this.draw = function() {
-            drawStatic();
+            // Draw object
+            arrowHeight = 8 * Math.sign(objectHeight);
+            context.lineCap = 'butt';
+            context.lineWidth = 4;
+
+            // Object body
+            context.beginPath();
+            context.moveTo(centerX - objectDistance, centerY);
+            context.lineTo(centerX - objectDistance, centerY - objectHeight + arrowHeight);
+            context.stroke();
+
+            // Arrowhead
+            context.lineWidth = 1;
+            context.beginPath();
+            context.moveTo(centerX - objectDistance + arrowWidth, centerY - objectHeight + arrowHeight);
+            context.lineTo(centerX - objectDistance - arrowWidth, centerY - objectHeight + arrowHeight);
+            context.lineTo(centerX - objectDistance, centerY - objectHeight);
+            context.lineTo(centerX - objectDistance + arrowWidth, centerY - objectHeight + arrowHeight);
+            context.fill();
+
+            // Draw image
+            arrowHeight = 8 * Math.sign(imageHeight);
+            context.lineWidth = 4;
+
+            // Image body
+            context.beginPath();
+            context.moveTo(centerX + imageDistance, centerY);
+            context.lineTo(centerX + imageDistance, centerY - imageHeight + arrowHeight);
+            context.stroke();
+
+            // Arrowhead
+            context.lineWidth = 1;
+            context.beginPath();
+            context.moveTo(centerX + imageDistance + arrowWidth, centerY - imageHeight + arrowHeight);
+            context.lineTo(centerX + imageDistance - arrowWidth, centerY - imageHeight + arrowHeight);
+            context.lineTo(centerX + imageDistance, centerY - imageHeight);
+            context.lineTo(centerX + imageDistance + arrowWidth, centerY - imageHeight + arrowHeight);
+            context.fill();
         };
 
         this.resize = function() {
@@ -61,7 +102,7 @@
             height = window.innerHeight;
             canvas.width = width;
             canvas.height = height;
-            self.draw();
+            draw();
         };
 
         this.init = function() {
