@@ -13,12 +13,34 @@
         imageDistance = 1 / (1 / focalLength - 1 / objectDistance),
         imageHeight = -objectHeight * imageDistance / objectDistance;
 
+        // Draw a vertical arrow. Positive length is downward.
+        var drawArrow = function(startX, startY, length) {
+            var arrowWidth = 6,
+            arrowLength = length > 0 ? 8 : -8;
+
+            context.lineCap = 'butt';
+            context.lineWidth = 4;
+
+            // Arrow body
+            context.beginPath();
+            context.moveTo(startX, startY);
+            context.lineTo(startX, startY + length - arrowLength);
+            context.stroke();
+
+            // Arrowhead
+            context.lineWidth = 1;
+            context.beginPath();
+            context.moveTo(startX + arrowWidth, startY + length - arrowLength);
+            context.lineTo(startX - arrowWidth, startY + length - arrowLength);
+            context.lineTo(startX, startY + length);
+            context.lineTo(startX + arrowWidth, startY + length - arrowLength);
+            context.fill();
+        };
+
         var draw = function() {
             var centerX = Math.floor(width / 2),
             centerY = Math.floor(height / 2),
-            angle = Math.asin(100 / focalLength),
-            arrowHeight,
-            arrowWidth = 6;
+            angle = Math.asin(100 / focalLength);
 
             // Draw dashed center line
             context.setLineDash([20, 20]);
@@ -37,12 +59,12 @@
 
             // Draw lens
             context.lineWidth = 2;
+            context.lineJoin = 'round';
             context.strokeStyle = '#666';
             context.beginPath();
-            context.arc(centerX - 2 * focalLength + focalLength * 2 * (1 - Math.cos(angle)), centerY, focalLength * 2, -angle, angle, false);
-            context.stroke();
-            context.beginPath();
-            context.arc(centerX + 2 * focalLength - focalLength * 2 * (1 - Math.cos(angle)), centerY, focalLength * 2, Math.PI - angle, Math.PI + angle, false);
+            context.arc(centerX - 2 * focalLength * Math.cos(angle), centerY, focalLength * 2, -angle, angle, false);
+            context.arc(centerX + 2 * focalLength * Math.cos(angle), centerY, focalLength * 2, Math.PI - angle, Math.PI + angle, false);
+            context.closePath();
             context.stroke();
             context.strokeStyle = '#000';
 
@@ -57,44 +79,9 @@
             context.arc(centerX + focalLength, centerY, 5, 0, 2 * Math.PI, false);
             context.fill();
 
-            // Draw object
-            arrowHeight = 8 * Math.sign(objectHeight);
-            context.lineCap = 'butt';
-            context.lineWidth = 4;
-
-            // Object body
-            context.beginPath();
-            context.moveTo(centerX - objectDistance, centerY);
-            context.lineTo(centerX - objectDistance, centerY - objectHeight + arrowHeight);
-            context.stroke();
-
-            // Arrowhead
-            context.lineWidth = 1;
-            context.beginPath();
-            context.moveTo(centerX - objectDistance + arrowWidth, centerY - objectHeight + arrowHeight);
-            context.lineTo(centerX - objectDistance - arrowWidth, centerY - objectHeight + arrowHeight);
-            context.lineTo(centerX - objectDistance, centerY - objectHeight);
-            context.lineTo(centerX - objectDistance + arrowWidth, centerY - objectHeight + arrowHeight);
-            context.fill();
-
-            // Draw image
-            arrowHeight = 8 * Math.sign(imageHeight);
-            context.lineWidth = 4;
-
-            // Image body
-            context.beginPath();
-            context.moveTo(centerX + imageDistance, centerY);
-            context.lineTo(centerX + imageDistance, centerY - imageHeight + arrowHeight);
-            context.stroke();
-
-            // Arrowhead
-            context.lineWidth = 1;
-            context.beginPath();
-            context.moveTo(centerX + imageDistance + arrowWidth, centerY - imageHeight + arrowHeight);
-            context.lineTo(centerX + imageDistance - arrowWidth, centerY - imageHeight + arrowHeight);
-            context.lineTo(centerX + imageDistance, centerY - imageHeight);
-            context.lineTo(centerX + imageDistance + arrowWidth, centerY - imageHeight + arrowHeight);
-            context.fill();
+            // Draw object and image.
+            drawArrow(centerX - objectDistance, centerY, -objectHeight);
+            drawArrow(centerX + imageDistance, centerY, -imageHeight);
         };
 
         this.resize = function() {
