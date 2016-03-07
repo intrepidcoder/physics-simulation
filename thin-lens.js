@@ -42,6 +42,9 @@
             centerY = Math.floor(height / 2),
             angle = Math.asin(100 / focalLength);
 
+            // Clear canvas
+            context.clearRect(0, 0, width, height);
+
             // Draw lens
             context.lineWidth = 2;
             context.lineJoin = 'round';
@@ -92,6 +95,14 @@
             drawArrow(centerX + imageDistance, centerY, -imageHeight);
         };
 
+        var click = function(event) {
+            objectDistance = Math.floor(width / 2) - event.clientX;
+            objectHeight = Math.floor(height / 2) - event.clientY;
+            imageDistance = 1 / (1 / focalLength - 1 / objectDistance);
+            imageHeight = -objectHeight * imageDistance / objectDistance;
+            draw();
+        };
+
         this.resize = function() {
             width = window.innerWidth;
             height = window.innerHeight;
@@ -103,6 +114,7 @@
         this.init = function() {
             canvas = document.getElementById('main-canvas');
             if (canvas.getContext) {
+                canvas.addEventListener('click', click, false);
                 context = canvas.getContext('2d');
                 self.resize();
             }
