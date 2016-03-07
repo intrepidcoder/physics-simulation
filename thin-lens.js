@@ -42,6 +42,19 @@
             centerY = Math.floor(height / 2),
             angle = Math.asin(100 / focalLength);
 
+            // Draw lens
+            context.lineWidth = 2;
+            context.lineJoin = 'round';
+            context.strokeStyle = '#666';
+            context.fillStyle = 'rgba(217, 232, 240, 0.5)';
+            context.beginPath();
+            context.arc(centerX - 2 * focalLength * Math.cos(angle), centerY, focalLength * 2, -angle, angle, false);
+            context.arc(centerX + 2 * focalLength * Math.cos(angle), centerY, focalLength * 2, Math.PI - angle, Math.PI + angle, false);
+            context.closePath();
+            context.fill();
+            context.stroke();
+            context.fillStyle = '#000';
+
             // Draw dashed center line
             context.setLineDash([20, 20]);
             context.lineDashOffset = 10;
@@ -55,17 +68,6 @@
             context.lineTo(width, centerY);
             context.stroke();
             context.setLineDash([1, 0]);
-
-
-            // Draw lens
-            context.lineWidth = 2;
-            context.lineJoin = 'round';
-            context.strokeStyle = '#666';
-            context.beginPath();
-            context.arc(centerX - 2 * focalLength * Math.cos(angle), centerY, focalLength * 2, -angle, angle, false);
-            context.arc(centerX + 2 * focalLength * Math.cos(angle), centerY, focalLength * 2, Math.PI - angle, Math.PI + angle, false);
-            context.closePath();
-            context.stroke();
             context.strokeStyle = '#000';
 
             // Draw focal points
@@ -77,6 +79,12 @@
             context.fill();
             context.beginPath();
             context.arc(centerX + focalLength, centerY, 5, 0, 2 * Math.PI, false);
+            context.fill();
+            context.beginPath();
+            context.arc(centerX - 2 * focalLength, centerY, 5, 0, 2 * Math.PI, false);
+            context.fill();
+            context.beginPath();
+            context.arc(centerX + 2 * focalLength, centerY, 5, 0, 2 * Math.PI, false);
             context.fill();
 
             // Draw object and image.
