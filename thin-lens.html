@@ -5,7 +5,12 @@
 	<title>Thin Lens</title>
 	<style>
 	body { margin: 0; overflow: hidden; }
-	#container { text-align: center; }
+	td { padding: .25em; }
+	input[type=number] { width: 5em; }
+	.label { text-align: right; }
+	#controls { position: absolute; top: 0; left: 0; padding: 1em; z-index: 1; }
+	#fork { margin-bottom: 1em; font-weight: bold; }
+	#instructions { font-size: small; }
 	#main-canvas { margin: auto; display: block; cursor: pointer; }
 	</style>
 	<script src="thin-lens.js"></script>
@@ -13,6 +18,27 @@
 <body>
 	<div id="container">
 		<canvas id="main-canvas" width="500" height="300">Your browser doesn't support drawing using the canvas. Please use an up-to-date browser.</canvas>
+	</div><div id="controls">
+		<div id="fork">Thin Lens Simulation: <a href="https://github.com/intrepidcoder/physics-simulation" title="View the source code on GitHub">Fork on GitHub</a></div>
+		<table>
+			<tr>
+				<td class="label"><label for="object-distance">Object distance:</label></td>
+				<td><input type="number" id="object-distance" name="object-distance" value="800" min="1" max="10000" step="1"></td>
+				<td class="label">Image distance:</td>
+				<td><span id="image-distance"></td>
+			</tr><tr>
+				<td class="label"><label for="object-height">Object height:</label></td>
+				<td><input type="number" id="object-height" name="object-height" value="100" min="-500" max="500" step="1"></td>
+				<td class="label">Image height:</td>
+				<td><span id="image-height"></td>
+			</tr><tr>
+				<td class="label"><label for="focal-length">Focal length:</label></td>
+				<td colspan="3"><input type="number" id="focal-length" name="focal-length" value="300" min="100" max="1000" step="1"></td>
+			</tr>
+		</table>
+		<div id="instructions">
+			Click on the screen to move the object.
+		</div>
 	</div>
 </body>
 </html>
