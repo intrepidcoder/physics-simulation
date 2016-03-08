@@ -37,6 +37,29 @@
             context.fill();
         };
 
+        var drawLine = function(startX, startY, endX, endY, color, dashed) {
+            context.save();
+            if (dashed) {
+                context.setLineDash([5, 10]);
+                context.lineDashOffset = 5;
+            }
+
+            startX = Math.round(startX);
+            startY = Math.round(startY);
+            endX = Math.round(endX);
+            endY = Math.round(endY);
+
+            context.lineCap = 'round';
+            context.strokeStyle = color;
+            context.lineWidth = 2;
+
+            context.beginPath();
+            context.moveTo(startX, startY);
+            context.lineTo(endX, endY);
+            context.stroke();
+            context.restore();
+        };
+
         var draw = function() {
             var centerX = Math.floor(width / 2),
             centerY = Math.floor(height / 2),
@@ -90,17 +113,34 @@
             context.arc(centerX + 2 * focalLength, centerY, 5, 0, 2 * Math.PI, false);
             context.fill();
 
+            // Draw backward extention of rays for Virtual image
+            if (imageDistance < 0) {
+                drawLine(centerX, centerY - objectHeight, 0, centerY - objectHeight - objectHeight * centerX / focalLength, 'blue', true);
+                drawLine(centerX - objectDistance, centerY - objectHeight, 0, centerY - objectHeight * centerX / objectDistance, 'green', true);
+                drawLine(centerX, centerY - imageHeight, 0, centerY - imageHeight, 'red', true);
+            }
+
+            // Draw rays
+            drawLine(centerX - objectDistance, centerY - objectHeight, centerX, centerY - objectHeight, 'blue');
+            drawLine(centerX, centerY - objectHeight, width, centerY - objectHeight + objectHeight * centerX / focalLength, 'blue');
+
+            drawLine(centerX - objectDistance, centerY - objectHeight, width, centerY + objectHeight * centerX / objectDistance, 'green');
+            drawLine(centerX - objectDistance, centerY - objectHeight, centerX, centerY - imageHeight, 'red');
+            drawLine(centerX, centerY - imageHeight, width, centerY - imageHeight, 'red');
+
             // Draw object and image.
             drawArrow(centerX - objectDistance, centerY, -objectHeight);
             drawArrow(centerX + imageDistance, centerY, -imageHeight);
         };
 
         var click = function(event) {
-            objectDistance = Math.floor(width / 2) - event.clientX;
-            objectHeight = Math.floor(height / 2) - event.clientY;
-            imageDistance = 1 / (1 / focalLength - 1 / objectDistance);
-            imageHeight = -objectHeight * imageDistance / objectDistance;
-            draw();
+            if (event.clientX < width / 2) {
+                objectDistance = Math.floor(width / 2) - event.clientX;
+                objectHeight = Math.floor(height / 2) - event.clientY;
+                imageDistance = 1 / (1 / focalLength - 1 / objectDistance);
+                imageHeight = -objectHeight * imageDistance / objectDistance;
+                draw();
+            }
         };
 
         this.resize = function() {
