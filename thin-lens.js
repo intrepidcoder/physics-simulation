@@ -11,9 +11,16 @@
         objectDistance,
         objectHeight,
         imageDistance,
-        imageHeight;
+        imageHeight,
+        lensHeight = 100;
 
         var calculate = function() {
+
+            // Contrain values to valid ranges
+            objectDistance = Math.min(Math.max(objectDistance, 1), 2000);
+            objectHeight = Math.min(Math.max(objectHeight, -1000), 1000);
+            focalLength = Math.min(Math.max(focalLength, 200), 800);
+
             imageDistance = 1 / (1 / focalLength - 1 / objectDistance);
             imageHeight = -objectHeight * imageDistance / objectDistance;
 
@@ -71,7 +78,7 @@
         var draw = function() {
             var centerX = Math.floor(width / 2),
             centerY = Math.floor(height / 2),
-            angle = Math.asin(100 / focalLength);
+            angle = Math.asin(lensHeight / focalLength);
 
             // Clear canvas
             context.clearRect(0, 0, width, height);
