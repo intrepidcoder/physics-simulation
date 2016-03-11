@@ -7,11 +7,19 @@
         self = this,
         width,
         height,
-        focalLength = 300,
-        objectDistance = 800,
-        objectHeight = 50,
-        imageDistance = 1 / (1 / focalLength - 1 / objectDistance),
-        imageHeight = -objectHeight * imageDistance / objectDistance;
+        focalLength,
+        objectDistance,
+        objectHeight,
+        imageDistance,
+        imageHeight;
+
+        var calculate = function() {
+            imageDistance = 1 / (1 / focalLength - 1 / objectDistance);
+            imageHeight = -objectHeight * imageDistance / objectDistance;
+
+            document.getElementById('image-distance').textContent = Math.round(imageDistance);
+            document.getElementById('image-height').textContent = Math.round(imageHeight);
+        };
 
         // Draw a vertical arrow. Positive length is downward.
         var drawArrow = function(startX, startY, length) {
@@ -113,7 +121,7 @@
             context.arc(centerX + 2 * focalLength, centerY, 5, 0, 2 * Math.PI, false);
             context.fill();
 
-            // Draw backward extention of rays for Virtual image
+            // Draw backward extention of rays for virtual image
             if (imageDistance < 0) {
                 drawLine(centerX, centerY - objectHeight, 0, centerY - objectHeight - objectHeight * centerX / focalLength, 'blue', true);
                 drawLine(centerX - objectDistance, centerY - objectHeight, 0, centerY - objectHeight * centerX / objectDistance, 'green', true);
@@ -137,8 +145,11 @@
             if (event.clientX < width / 2) {
                 objectDistance = Math.floor(width / 2) - event.clientX;
                 objectHeight = Math.floor(height / 2) - event.clientY;
-                imageDistance = 1 / (1 / focalLength - 1 / objectDistance);
-                imageHeight = -objectHeight * imageDistance / objectDistance;
+
+                document.getElementById('object-distance').value = objectDistance;
+                document.getElementById('object-height').value = objectHeight;
+
+                calculate();
                 draw();
             }
         };
@@ -153,9 +164,34 @@
 
         this.init = function() {
             canvas = document.getElementById('main-canvas');
+
             if (canvas.getContext) {
                 canvas.addEventListener('click', click, false);
                 context = canvas.getContext('2d');
+
+                document.getElementById('object-distance').addEventListener('change', function() {
+                    objectDistance = parseInt(this.value, 10);
+                    calculate();
+                    draw();
+                });
+
+                document.getElementById('object-height').addEventListener('change', function() {
+                    objectHeight = parseInt(this.value, 10);
+                    calculate();
+                    draw();
+                });
+
+                document.getElementById('focal-length').addEventListener('change', function() {
+                    focalLength = parseInt(this.value, 10);
+                    calculate();
+                    draw();
+                });
+
+                objectDistance = parseInt(document.getElementById('object-distance').value, 10);
+                objectHeight = parseInt(document.getElementById('object-height').value, 10);
+                focalLength = parseInt(document.getElementById('focal-length').value, 10);
+
+                calculate();
                 self.resize();
             }
         };
