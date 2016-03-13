@@ -91,17 +91,34 @@
                 drawLine(centerX, centerY - imageHeight, 0, centerY - imageHeight, 'red', true);
             }
 
-            // Draw rays
+            // Draw parallel ray
             drawLine(centerX - objectDistance, centerY - objectHeight, centerX, centerY - objectHeight, 'blue');
             drawLine(centerX, centerY - objectHeight, width, centerY - objectHeight + objectHeight * centerX / focalLength, 'blue');
 
+            // Draw vertex ray
             drawLine(centerX - objectDistance, centerY - objectHeight, width, centerY + objectHeight * centerX / objectDistance, 'green');
+
+            // Draw focal ray
             drawLine(centerX - objectDistance, centerY - objectHeight, centerX, centerY - imageHeight, 'red');
             drawLine(centerX, centerY - imageHeight, width, centerY - imageHeight, 'red');
         };
 
         var drawDivergingLensRays = function() {
+            // Draw backward extention of rays for virtual image
+            drawLine(centerX, centerY - objectHeight, 0, centerY - objectHeight + objectHeight * centerX / focalLength, 'blue', true);
+            drawLine(centerX - objectDistance, centerY - objectHeight, 0, centerY - objectHeight * centerX / objectDistance, 'green', true);
+            drawLine(centerX, centerY - imageHeight, 0, centerY - imageHeight, 'red', true);
 
+            // Draw parallel ray
+            drawLine(centerX - objectDistance, centerY - objectHeight, centerX, centerY - objectHeight, 'blue');
+            drawLine(centerX, centerY - objectHeight, width, centerY - objectHeight - objectHeight * centerX / focalLength, 'blue');
+
+            // Draw vertex ray
+            drawLine(centerX - objectDistance, centerY - objectHeight, width, centerY + objectHeight * centerX / objectDistance, 'green');
+
+            // Draw focal ray
+            drawLine(centerX - objectDistance, centerY - objectHeight, centerX, centerY - imageHeight, 'red');
+            drawLine(centerX, centerY - imageHeight, width, centerY - imageHeight, 'red');
         };
 
         var draw = function() {
