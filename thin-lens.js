@@ -8,11 +8,14 @@
         width,
         height,
         focalLength,
+        convergingLens = false,
         objectDistance,
         objectHeight,
         imageDistance,
         imageHeight,
-        lensHeight = 200;
+        lensHeight = 200,
+        centerX,
+        centerY;
 
         var calculate = function() {
 
@@ -21,8 +24,13 @@
             objectHeight = Math.min(Math.max(objectHeight, -1000), 1000);
             focalLength = Math.min(Math.max(focalLength, 200), 800);
 
-            imageDistance = 1 / (1 / focalLength - 1 / objectDistance);
-            imageHeight = -objectHeight * imageDistance / objectDistance;
+            if (convergingLens) {
+                imageDistance = 1 / (1 / focalLength - 1 / objectDistance);
+                imageHeight = -objectHeight * imageDistance / objectDistance;
+            } else {
+                imageDistance = 1 / (1 / -focalLength - 1 / objectDistance);
+                imageHeight = -objectHeight * imageDistance / objectDistance;
+            }
 
             document.getElementById('image-distance').textContent = Math.round(imageDistance);
             document.getElementById('image-height').textContent = Math.round(imageHeight);
@@ -75,59 +83,7 @@
             context.restore();
         };
 
-        var draw = function() {
-            var centerX = Math.floor(width / 2),
-            centerY = Math.floor(height / 2),
-            angle = Math.asin(lensHeight / (2 * focalLength));
-
-            // Clear canvas
-            context.clearRect(0, 0, width, height);
-
-            // Draw lens
-            context.lineWidth = 2;
-            context.lineJoin = 'round';
-            context.strokeStyle = '#666';
-            context.fillStyle = 'rgba(217, 232, 240, 0.5)';
-            context.beginPath();
-            context.arc(centerX - 2 * focalLength * Math.cos(angle), centerY, focalLength * 2, -angle, angle, false);
-            context.arc(centerX + 2 * focalLength * Math.cos(angle), centerY, focalLength * 2, Math.PI - angle, Math.PI + angle, false);
-            context.closePath();
-            context.fill();
-            context.stroke();
-            context.fillStyle = '#000';
-
-            // Draw dashed center line
-            context.setLineDash([20, 20]);
-            context.lineDashOffset = 10;
-            // Draw in two segments so dashes are centered
-            context.beginPath();
-            context.moveTo(centerX, centerY);
-            context.lineTo(0, centerY);
-            context.stroke();
-            context.beginPath();
-            context.moveTo(centerX, centerY);
-            context.lineTo(width, centerY);
-            context.stroke();
-            context.setLineDash([1, 0]);
-            context.strokeStyle = '#000';
-
-            // Draw focal points
-            context.beginPath();
-            context.arc(centerX, centerY, 5, 0, 2 * Math.PI, false);
-            context.fill();
-            context.beginPath();
-            context.arc(centerX - focalLength, centerY, 5, 0, 2 * Math.PI, false);
-            context.fill();
-            context.beginPath();
-            context.arc(centerX + focalLength, centerY, 5, 0, 2 * Math.PI, false);
-            context.fill();
-            context.beginPath();
-            context.arc(centerX - 2 * focalLength, centerY, 5, 0, 2 * Math.PI, false);
-            context.fill();
-            context.beginPath();
-            context.arc(centerX + 2 * focalLength, centerY, 5, 0, 2 * Math.PI, false);
-            context.fill();
-
+        var drawConvergingLensRays = function() {
             // Draw backward extention of rays for virtual image
             if (imageDistance < 0) {
                 drawLine(centerX, centerY - objectHeight, 0, centerY - objectHeight - objectHeight * centerX / focalLength, 'blue', true);
@@ -142,6 +98,78 @@
             drawLine(centerX - objectDistance, centerY - objectHeight, width, centerY + objectHeight * centerX / objectDistance, 'green');
             drawLine(centerX - objectDistance, centerY - objectHeight, centerX, centerY - imageHeight, 'red');
             drawLine(centerX, centerY - imageHeight, width, centerY - imageHeight, 'red');
+        };
+
+        var drawDivergingLensRays = function() {
+
+        };
+
+        var draw = function() {
+            var angle = Math.asin(lensHeight / (2 * focalLength));
+
+            // Clear canvas
+            context.clearRect(0, 0, width, height);
+
+            // Draw lens
+            context.lineWidth = 2;
+            context.lineJoin = 'round';
+            context.strokeStyle = '#666';
+            context.fillStyle = 'rgba(217, 232, 240, 0.5)';
+            context.beginPath();
+
+            if (convergingLens) {
+                context.arc(centerX - 2 * focalLength * Math.cos(angle), centerY, focalLength * 2, -angle, angle, false);
+                context.arc(centerX + 2 * focalLength * Math.cos(angle), centerY, focalLength * 2, Math.PI - angle, Math.PI + angle, false);
+            } else {
+                context.arc(centerX - 2 * focalLength - lensHeight / 30, centerY, focalLength * 2, -angle, angle, false);
+                context.arc(centerX + 2 * focalLength + lensHeight / 30, centerY, focalLength * 2, Math.PI - angle, Math.PI + angle, false);
+            }
+
+            context.closePath();
+            context.fill();
+            context.stroke();
+            context.fillStyle = '#000';
+
+            // Draw dashed center line using two segments so dashes are centered
+            context.setLineDash([20, 20]);
+            context.lineDashOffset = 10;
+            context.beginPath();
+            context.moveTo(centerX, centerY);
+            context.lineTo(0, centerY);
+            context.stroke();
+            context.beginPath();
+            context.moveTo(centerX, centerY);
+            context.lineTo(width, centerY);
+            context.stroke();
+            context.setLineDash([1, 0]);
+            context.strokeStyle = '#000';
+
+            // Draw center point of lens
+            context.beginPath();
+            context.arc(centerX, centerY, 4, 0, 2 * Math.PI, false);
+            context.fill();
+
+            // Draw focal points
+            context.beginPath();
+            context.arc(centerX - focalLength, centerY, 4, 0, 2 * Math.PI, false);
+            context.fill();
+            context.beginPath();
+            context.arc(centerX + focalLength, centerY, 4, 0, 2 * Math.PI, false);
+            context.fill();
+            context.beginPath();
+
+            // Draw center points of curvature
+            context.arc(centerX - 2 * focalLength, centerY, 4, 0, 2 * Math.PI, false);
+            context.fill();
+            context.beginPath();
+            context.arc(centerX + 2 * focalLength, centerY, 4, 0, 2 * Math.PI, false);
+            context.fill();
+
+            if (convergingLens) {
+                drawConvergingLensRays();
+            } else {
+                drawDivergingLensRays();
+            }
 
             // Draw object and image.
             drawArrow(centerX - objectDistance, centerY, -objectHeight);
@@ -150,8 +178,8 @@
 
         var click = function(event) {
             if (event.clientX < width / 2) {
-                objectDistance = Math.floor(width / 2) - event.clientX;
-                objectHeight = Math.floor(height / 2) - event.clientY;
+                objectDistance = centerX - event.clientX;
+                objectHeight = centerY - event.clientY;
 
                 document.getElementById('object-distance').value = objectDistance;
                 document.getElementById('object-height').value = objectHeight;
@@ -166,6 +194,8 @@
             height = window.innerHeight;
             canvas.width = width;
             canvas.height = height;
+            centerX = Math.floor(width / 2);
+            centerY = Math.floor(height / 2);
             draw();
         };
 
@@ -190,6 +220,18 @@
 
                 document.getElementById('focal-length').addEventListener('change', function() {
                     focalLength = parseInt(this.value, 10);
+                    calculate();
+                    draw();
+                });
+
+                document.getElementById('converging-lens').addEventListener('click', function() {
+                    convergingLens = true;
+                    calculate();
+                    draw();
+                });
+
+                document.getElementById('diverging-lens').addEventListener('click', function() {
+                    convergingLens = false;
                     calculate();
                     draw();
                 });
