@@ -12,7 +12,7 @@
         objectHeight,
         imageDistance,
         imageHeight,
-        lensHeight = 100;
+        lensHeight = 200;
 
         var calculate = function() {
 
@@ -78,7 +78,7 @@
         var draw = function() {
             var centerX = Math.floor(width / 2),
             centerY = Math.floor(height / 2),
-            angle = Math.asin(lensHeight / focalLength);
+            angle = Math.asin(lensHeight / (2 * focalLength));
 
             // Clear canvas
             context.clearRect(0, 0, width, height);
