@@ -8,12 +8,12 @@
         width,
         height,
         focalLength,
-        convergingLens = false,
+        convergingLens = true,
         objectDistance,
         objectHeight,
         imageDistance,
         imageHeight,
-        lensHeight = 200,
+        lensHeight,
         centerX,
         centerY;
 
@@ -207,12 +207,16 @@
         };
 
         this.resize = function() {
+            var verticalSpace;
             width = window.innerWidth;
             height = window.innerHeight;
             canvas.width = width;
             canvas.height = height;
+
+            verticalSpace = height - document.getElementById('controls').clientHeight;
             centerX = Math.floor(width / 2);
-            centerY = Math.floor(height / 2);
+            centerY = height - Math.floor(verticalSpace / 2);
+            lensHeight = Math.max(Math.min(Math.floor(verticalSpace * 0.4), 200), 100);
             draw();
         };
 
