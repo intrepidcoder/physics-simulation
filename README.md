@@ -19,5 +19,5 @@ Actual light rays are shown as solid lines and extended rays are shown as dotted
 
 Directions: To move the object, click anywhere to the left of the lens or use the input boxes to set the object's height and distance from the vertex. Choose the lens type (converging or diverging) by selecting the corresponding button and change the focal length of the lens.
 
-[1]: https://github.com/intrepidcoder/physics-simulation/elastic-collision.html "Elastic Collision"
-[2]: https://github.com/intrepidcoder/physics-simulation/thin-lens.html "Thin Lens"
+[1]: https://intrepidcoder.github.io/physics-simulation/elastic-collision.html "Elastic Collision"
+[2]: https://intrepidcoder.github.io/physics-simulation/thin-lens.html "Thin Lens"
