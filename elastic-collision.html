@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset=utf-8>
+		<title>Elastic Collision</title>
+		<style>
+			body { margin: 0; overflow: hidden; }
+			canvas { width: 100%; height: 100%; z-index: 0; }
+			td { padding: 5px; }
+			.label { text-align: right; }
+			#controls { position: absolute; top: 0px; left: 0px; padding: 10px; z-index: 1; }
+			#start-button { width: 100%; }
+			#instructions { position: absolute; bottom: 5px; left: 5px; font-size: small; }
+		</style>
+	</head>
+	<body>
+		<script src="three.min.js"></script>
+		<script src="OrbitControls.js"></script>
+		<script src="elastic-collision.js"></script>
+		<div id="controls">
+			<table>
+				<thead>
+					<tr>
+						<th colspan="2">Red ball</th>
+						<th colspan="2">Blue ball</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td class="label">Mass:</td>
+						<td><input type="number" id="mass1" name="mass1" value="1000" min="1" max="10000"></td>
+						<td class="label">Mass:</td>
+						<td><input type="number" id="mass2" name="mass2" value="1000" min="1" max="10000"></td>
+						<td><input type="button" id="start-button" name="start-button" value="Start"></td>
+					</tr><tr>
+						<td class="label">Velocity:</td>
+						<td><input type="number" id="velocity1" name="velocity1" value="50" min="0" max="1000"></td>
+						<td class="label">Velocity:</td>
+						<td><input type="number" id="velocity2" name="velocity2" value="50" min="0" max="1000"></td>
+						<td><input type="button" id="reset-button" name="reset-button" value="Reset"></td>
+					</tr><tr>
+						<td colspan="2">Elastic Collision: <a href="https://github.com/intrepidcoder/physics-simulation" title="View the source code on GitHub">Fork on GitHub</a></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div id="instructions">Click+drag/scroll to rotate or zoom</div>
+	</body>
+</html>
